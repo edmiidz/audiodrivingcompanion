@@ -29,8 +29,8 @@ public class Splash extends AppCompatActivity {
 				finish();
 			}
 		};
-	//	Timer t = new Timer();
-		t.schedule(task,5000);
+		Timer t = new Timer();
+		t.schedule(task,2000);
 
 
         Button ib=(Button)findViewById(R.id.drivingButton);

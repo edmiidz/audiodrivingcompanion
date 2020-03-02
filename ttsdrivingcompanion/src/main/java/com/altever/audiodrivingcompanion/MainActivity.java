@@ -18,10 +18,10 @@ public class MainActivity extends AppCompatActivity {
     EditText ed1;
     Button b1,b2;
     TextView unit;
-   // SimpleLocation location;
+    SimpleLocation location;
     String coordinates[];
-    Double lattitude;
-    Double longtitude;
+    Double latitude = 49.1212122;
+    Double longitude = 121.1231223;
 
     private Object View;
 
@@ -29,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        latitude = location.getLatitude();
+//        longitude = location.getLongitude();
+//        System.out.println("I am Here");
+//        System.out.println(latitude.toString());
 
         ed1=(EditText)findViewById(R.id.editText);
         b1=(Button)findViewById(R.id.buttonTTS);
@@ -45,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Toast.makeText(
-                getApplicationContext(), "Loading...", Toast.LENGTH_SHORT).show();
-
+                getApplicationContext(), "Loading... @ " + latitude.toString(), Toast.LENGTH_SHORT).show();
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
