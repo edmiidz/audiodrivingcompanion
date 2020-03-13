@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.altever.audiodrivingcompanion">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -26,6 +27,11 @@
 
         <service android:name=".service.LocationService"></service>
 
+        <provider
+            android:name=".database.content_provider.ContentProviderSpeed"
+            android:authorities="ttsdrivingcompanion.speed"
+            android:exported="false" />
+        
     </application>
 
 </manifest>
