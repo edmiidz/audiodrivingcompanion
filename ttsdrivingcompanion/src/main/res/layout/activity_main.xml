@@ -26,21 +26,21 @@
             android:id="@+id/tvSpeedValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
             android:layout_centerInParent="true"
-            android:textSize="18dp"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/tvSpeed"/>
+            android:layout_marginLeft="30sp"
+            android:layout_toRightOf="@id/tvSpeed"
+            android:text="0"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/tvSpeedUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="km/h"
             android:layout_centerInParent="true"
-            android:textSize="18dp"
             android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/tvSpeedValue"/>
+            android:layout_toRightOf="@id/tvSpeedValue"
+            android:text="km/h"
+            android:textSize="30sp" />
     </RelativeLayout>
 
     <RelativeLayout
