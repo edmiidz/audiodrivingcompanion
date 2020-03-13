@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.altever.audiodrivingcompanion.database.DatabaseHelper;
-import com.altever.audiodrivingcompanion.database.table.TableStoreSpeed;
+import com.altever.audiodrivingcompanion.database.table.TableLocationLog;
 
 
 public class ContentProviderSpeed extends ContentProvider {
@@ -50,11 +50,11 @@ public class ContentProviderSpeed extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
             case ALL_SPEED_ID:
-                queryBuilder.setTables(TableStoreSpeed.TABLE_NAME);
+                queryBuilder.setTables(TableLocationLog.TABLE_NAME);
                 break;
             case SINGLE_SPEED_ID:
-                queryBuilder.setTables(TableStoreSpeed.TABLE_NAME);
-                queryBuilder.appendWhere(TableStoreSpeed.ID+ "=" + uri.getLastPathSegment());
+                queryBuilder.setTables(TableLocationLog.TABLE_NAME);
+                queryBuilder.appendWhere(TableLocationLog.ID+ "=" + uri.getLastPathSegment());
                 break;
 
             default:
@@ -82,7 +82,7 @@ public class ContentProviderSpeed extends ContentProvider {
         switch (uriType) {
 
             case ALL_SPEED_ID:
-                id = sqlDB.insert(TableStoreSpeed.TABLE_NAME, null, values);
+                id = sqlDB.insert(TableLocationLog.TABLE_NAME, null, values);
                 _uri = ContentUris.withAppendedId(ALL_SPEED_URI, id);
                 break;
 
@@ -101,7 +101,7 @@ public class ContentProviderSpeed extends ContentProvider {
         String id;
         switch (uriType) {
             case ALL_SPEED_ID:
-                rowsDeleted = sqlDB.delete(TableStoreSpeed.TABLE_NAME, selection,selectionArgs);
+                rowsDeleted = sqlDB.delete(TableLocationLog.TABLE_NAME, selection,selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -120,7 +120,7 @@ public class ContentProviderSpeed extends ContentProvider {
         String id;
         switch (uriType) {
             case ALL_SPEED_ID:
-                rowsUpdated = sqlDB.update(TableStoreSpeed.TABLE_NAME,
+                rowsUpdated = sqlDB.update(TableLocationLog.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs);
@@ -128,14 +128,14 @@ public class ContentProviderSpeed extends ContentProvider {
             case SINGLE_SPEED_ID:
                 id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsUpdated = sqlDB.update(TableStoreSpeed.TABLE_NAME,
+                    rowsUpdated = sqlDB.update(TableLocationLog.TABLE_NAME,
                             values,
-                            TableStoreSpeed.ID+ "=" + id,
+                            TableLocationLog.ID+ "=" + id,
                             null);
                 } else {
-                    rowsUpdated = sqlDB.update(TableStoreSpeed.TABLE_NAME,
+                    rowsUpdated = sqlDB.update(TableLocationLog.TABLE_NAME,
                             values,
-                            TableStoreSpeed.ID+ "=" + id
+                            TableLocationLog.ID+ "=" + id
                                     + " and "
                                     + selection,
                             selectionArgs);

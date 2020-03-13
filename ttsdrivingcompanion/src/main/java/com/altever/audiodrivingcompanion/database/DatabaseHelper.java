@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.altever.audiodrivingcompanion.database.table.TableStoreSpeed;
+import com.altever.audiodrivingcompanion.database.table.TableLocationLog;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -21,12 +21,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(TableStoreSpeed.CREATE_TABLE);
+        db.execSQL(TableLocationLog.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TableStoreSpeed.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TableLocationLog.TABLE_NAME);
 
         // Create tables again
         onCreate(db);

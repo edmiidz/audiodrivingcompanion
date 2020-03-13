@@ -31,7 +31,7 @@
             android:name=".database.content_provider.ContentProviderSpeed"
             android:authorities="ttsdrivingcompanion.speed"
             android:exported="false" />
-        
+
     </application>
 
 </manifest>

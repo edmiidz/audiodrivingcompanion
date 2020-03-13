@@ -1,6 +1,6 @@
 package com.altever.audiodrivingcompanion.database.table;
 
-public class TableStoreSpeed {
+public class TableLocationLog {
 
     public static final String TABLE_NAME       = "location_log";
 
@@ -34,7 +34,7 @@ public class TableStoreSpeed {
                     + SPEED_TIME + " DATETIME DEFAULT CURRENT_TIMESTAMP"
                     + ")";
 
-    public TableStoreSpeed(int id, Double latitude, Double longitude, Double speed, String modestatus, String logdatetime, String updatedLast, String speedTime) {
+    public TableLocationLog(int id, Double latitude, Double longitude, Double speed, String modestatus, String logdatetime, String updatedLast, String speedTime) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
