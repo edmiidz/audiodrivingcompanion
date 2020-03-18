@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -17,6 +18,9 @@ import android.os.Message;
 import com.altever.audiodrivingcompanion.LocationAddress;
 import com.altever.audiodrivingcompanion.MainActivity;
 import com.altever.audiodrivingcompanion.R;
+import com.altever.audiodrivingcompanion.database.SharedPrefUtil;
+import com.altever.audiodrivingcompanion.database.content_provider.ContentProviderSpeed;
+import com.altever.audiodrivingcompanion.database.table.TableLocationLog;
 import com.altever.audiodrivingcompanion.textToSpeech.TextSpeaker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,8 +37,8 @@ import static com.altever.audiodrivingcompanion.MainActivity.tvSpeedUnit;
 
 public class LocationService extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final long INTERVAL = 1000 * 2;
-    private static final long FASTEST_INTERVAL = 1000 * 1;
+    private static final long INTERVAL = 10000 * 2;
+    private static final long FASTEST_INTERVAL = 10000 * 1;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     Location mCurrentLocation, lStart, lEnd;
@@ -139,6 +143,7 @@ public class LocationService extends Service implements LocationListener, Google
         locationAddress.getAddressFromLocation(locLat, locLong,
                 getApplicationContext(), new GeocoderHandler());
 
+        saveDataInDb();
     }
 
     @Override
@@ -208,4 +213,17 @@ public class LocationService extends Service implements LocationListener, Google
             tvAddressValue.setText(locationAddress);
         }
     }
+
+    private void saveDataInDb()
+    {
+        ContentValues values = new ContentValues();
+        values.put(TableLocationLog.LATITUDE, locLat);
+        values.put(TableLocationLog.LONGITUDE, locLong);
+        values.put(TableLocationLog.SPEED, speed);
+        values.put(TableLocationLog.MODESTATUS, SharedPrefUtil.getStatusMode(this, "SP_STATUS_MODE", "Off"));
+
+        getContentResolver().insert(ContentProviderSpeed.ALL_SPEED_URI, values);
+
+    }
+
 }

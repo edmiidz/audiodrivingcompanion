@@ -10,8 +10,6 @@ public class TableLocationLog {
     public static final String SPEED            = "speed";
     public static final String MODESTATUS       = "modestatus";
     public static final String LOGDATETIME      = "logdatetime";
-    public static final String UPDATEDLAST      = "updatedLast";
-    public static final String SPEED_TIME       = "time_stamp";
 
     private int id;
     private Double latitude;
@@ -19,8 +17,6 @@ public class TableLocationLog {
     private Double speed;
     private String modestatus;
     private String logdatetime;
-    private String updatedLast;
-    private String speedTime;
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
@@ -29,20 +25,16 @@ public class TableLocationLog {
                     + LONGITUDE + " REAL,"
                     + SPEED + " REAL,"
                     + MODESTATUS + " TEXT,"
-                    + LOGDATETIME + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
-                    + UPDATEDLAST + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
-                    + SPEED_TIME + " DATETIME DEFAULT CURRENT_TIMESTAMP"
+                    + LOGDATETIME + " DATETIME DEFAULT CURRENT_TIMESTAMP"
                     + ")";
 
-    public TableLocationLog(int id, Double latitude, Double longitude, Double speed, String modestatus, String logdatetime, String updatedLast, String speedTime) {
+    public TableLocationLog(int id, Double latitude, Double longitude, Double speed, String modestatus, String logdatetime) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.speed = speed;
         this.modestatus = modestatus;
         this.logdatetime = logdatetime;
-        this.updatedLast = updatedLast;
-        this.speedTime = speedTime;
     }
 
     public int getId() {
@@ -91,21 +83,5 @@ public class TableLocationLog {
 
     public void setLogdatetime(String logdatetime) {
         this.logdatetime = logdatetime;
-    }
-
-    public String getUpdatedLast() {
-        return updatedLast;
-    }
-
-    public void setUpdatedLast(String updatedLast) {
-        this.updatedLast = updatedLast;
-    }
-
-    public String getSpeedTime() {
-        return speedTime;
-    }
-
-    public void setSpeedTime(String speedTime) {
-        this.speedTime = speedTime;
     }
 }

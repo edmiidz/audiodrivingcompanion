@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.altever.audiodrivingcompanion.database.SharedPrefUtil;
+import com.altever.audiodrivingcompanion.database.content_provider.ContentProviderSpeed;
 import com.altever.audiodrivingcompanion.service.LocationService;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -82,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getContentResolver().delete(ContentProviderSpeed.ALL_SPEED_URI,null,null);
+        SharedPrefUtil.setStatusMode(this,"SP_STATUS_MODE", "Off");
 
         // ui components
         initUi();
