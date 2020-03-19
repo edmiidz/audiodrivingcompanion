@@ -19,6 +19,7 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public static TextView tvSpeed,tvSpeedValue,tvSpeedUnit,tvLocation,tvLocationValue,tvAddressValue;
     Button buttonTTSCurrentSpeed,buttonTTSCurrentLocation,buttonChangeUnit;
     private Boolean mRequestingLocationUpdates;
+    public static Switch swichButton;
 
     // location last updated time
     private String mLastUpdateTime;
@@ -138,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         tvLocation      = findViewById(R.id.tvLocation);
         tvLocationValue = findViewById(R.id.tvLocationValue);
         tvAddressValue  = findViewById(R.id.tvAddressValue);
+        swichButton     = findViewById(R.id.switch_button);
 
         buttonChangeUnit = findViewById(R.id.buttonChangeUnit);
         buttonTTSCurrentLocation = findViewById(R.id.buttonTTSCurrentLocation);

@@ -8,16 +8,21 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
+import android.view.View;
+import android.widget.Toast;
 
 import com.altever.audiodrivingcompanion.LocationAddress;
 import com.altever.audiodrivingcompanion.MainActivity;
 import com.altever.audiodrivingcompanion.R;
+import com.altever.audiodrivingcompanion.database.DatabaseHelper;
 import com.altever.audiodrivingcompanion.database.SharedPrefUtil;
 import com.altever.audiodrivingcompanion.database.content_provider.ContentProviderSpeed;
 import com.altever.audiodrivingcompanion.database.table.TableLocationLog;
@@ -28,17 +33,23 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import java.text.DecimalFormat;
+import java.util.Locale;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import static com.altever.audiodrivingcompanion.MainActivity.swichButton;
 import static com.altever.audiodrivingcompanion.MainActivity.tvAddressValue;
 import static com.altever.audiodrivingcompanion.MainActivity.tvLocationValue;
 import static com.altever.audiodrivingcompanion.MainActivity.tvSpeedUnit;
 
 public class LocationService extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final long INTERVAL = 10000 * 2;
+    private static final long INTERVAL = 10000 * 1;
     private static final long FASTEST_INTERVAL = 10000 * 1;
+
+    private static final long INTERVAL_FIVE_MINUTE = 60000 * 1;
+
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     Location mCurrentLocation, lStart, lEnd;
@@ -47,6 +58,10 @@ public class LocationService extends Service implements LocationListener, Google
     Context context = this;
     TextSpeaker tts1;
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
+
+    Cursor getSpeedCursor;
+    DatabaseHelper db;
+    TextToSpeech tts;
 
     @Nullable
     @Override
@@ -61,7 +76,6 @@ public class LocationService extends Service implements LocationListener, Google
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
@@ -69,7 +83,7 @@ public class LocationService extends Service implements LocationListener, Google
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Foreground Service")
+                .setContentTitle(context.getResources().getString(R.string.app_name))
                 .setContentText("Location service started")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentIntent(pendingIntent)
@@ -91,7 +105,6 @@ public class LocationService extends Service implements LocationListener, Google
         }
     }
 
-
     @Override
     public void onConnected(Bundle bundle) {
         try {
@@ -101,19 +114,16 @@ public class LocationService extends Service implements LocationListener, Google
         }
     }
 
-
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
         distance = 0;
     }
 
-
     @Override
     public void onConnectionSuspended(int i) {
 
     }
-
 
     @Override
     public void onLocationChanged(Location location) {
@@ -141,7 +151,7 @@ public class LocationService extends Service implements LocationListener, Google
 
         LocationAddress locationAddress = new LocationAddress();
         locationAddress.getAddressFromLocation(locLat, locLong,
-                getApplicationContext(), new GeocoderHandler());
+                context, new GeocoderHandler());
 
         saveDataInDb();
     }
@@ -149,7 +159,18 @@ public class LocationService extends Service implements LocationListener, Google
     @Override
     public void onCreate()
     {
+        db = new DatabaseHelper(context);
         tts1 = new TextSpeaker(context);
+
+        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.US);
+                }
+            }
+        });
+
         createLocationRequest();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -157,6 +178,8 @@ public class LocationService extends Service implements LocationListener, Google
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+
+        checkSpeedFiveMinute();
     }
 
     @Override
@@ -166,7 +189,7 @@ public class LocationService extends Service implements LocationListener, Google
     private void updateUI() {
         if (MainActivity.p == 0) {
 
-            tvLocationValue.setText("Current Latitude : " + locLat + ", Current Longitude : "+locLong);
+            tvLocationValue.setText("Latitude : " + locLat + ", Longitude : "+locLong);
 
             if(tvSpeedUnit.getText().toString() == "mph")
             {
@@ -184,8 +207,6 @@ public class LocationService extends Service implements LocationListener, Google
             lStart = lEnd;
         }
     }
-
-
 
     @Override
     public void onDestroy() {
@@ -224,6 +245,50 @@ public class LocationService extends Service implements LocationListener, Google
 
         getContentResolver().insert(ContentProviderSpeed.ALL_SPEED_URI, values);
 
+    }
+
+    protected void checkSpeedFiveMinute() {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                try {
+                    getSpeedCursor = db.getSpeedDetails();
+                    if (getSpeedCursor != null && getSpeedCursor.moveToFirst())
+                    {
+                        if (getSpeedCursor.getCount() > 0)
+                        {
+                            Double sumOfSpeed = Double.parseDouble(getSpeedCursor.getString(getSpeedCursor.getColumnIndex("speed")));
+                            Double countOfSpeed = Double.parseDouble(getSpeedCursor.getString(getSpeedCursor.getColumnIndex("count")));
+
+                            Double avgSpeed = sumOfSpeed/countOfSpeed;
+
+                            if(countOfSpeed>=6)
+                            {
+                                if(avgSpeed >= 0.5)
+                                {
+                                    if(!(SharedPrefUtil.getStatusMode(context,"SP_STATUS_MODE", "On").equals("On")))
+                                    {
+                                        SharedPrefUtil.setStatusMode(context,"SP_STATUS_MODE", "On");
+                                        tts.speak("You are in Driving Mode", TextToSpeech.QUEUE_FLUSH, null);
+                                    }
+                                    swichButton.setChecked(true);
+                                }
+                                else
+                                {
+                                    SharedPrefUtil.setStatusMode(context,"SP_STATUS_MODE", "Off");
+                                    swichButton.setChecked(false);
+                                }
+                            }
+
+                        }
+                    }
+                }
+                catch (Exception e){
+
+                }
+                handler.postDelayed(this, INTERVAL_FIVE_MINUTE); //now is every 2 minutes
+            }
+        }, INTERVAL_FIVE_MINUTE);
     }
 
 }
