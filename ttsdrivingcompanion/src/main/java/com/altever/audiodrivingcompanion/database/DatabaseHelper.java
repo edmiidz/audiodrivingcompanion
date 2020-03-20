@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db   = this.getWritableDatabase();
 
-        String rawQuery     =   "SELECT sum(speed) as speed,count (*) as count FROM (select * from location_log ORDER by id DESC LIMIT 6) as a";
+        String rawQuery     =   "SELECT sum(speed) as speed,count (*) as count FROM (select * from location_log ORDER by id DESC LIMIT 30) as a";
 
         Cursor c = db.rawQuery(
                 rawQuery,

@@ -45,10 +45,10 @@ import static com.altever.audiodrivingcompanion.MainActivity.tvSpeedUnit;
 
 public class LocationService extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final long INTERVAL = 10000 * 1;
-    private static final long FASTEST_INTERVAL = 10000 * 1;
+    private static final long INTERVAL = 8000 * 1;
+    private static final long FASTEST_INTERVAL = 8000 * 1;
 
-    private static final long INTERVAL_FIVE_MINUTE = 60000 * 1;
+    private static final long INTERVAL_FIVE_MINUTE = 280000 * 1;
 
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
@@ -259,12 +259,10 @@ public class LocationService extends Service implements LocationListener, Google
                         {
                             Double sumOfSpeed = Double.parseDouble(getSpeedCursor.getString(getSpeedCursor.getColumnIndex("speed")));
                             Double countOfSpeed = Double.parseDouble(getSpeedCursor.getString(getSpeedCursor.getColumnIndex("count")));
-
                             Double avgSpeed = sumOfSpeed/countOfSpeed;
-
-                            if(countOfSpeed>=6)
+                            if(countOfSpeed >= 30)
                             {
-                                if(avgSpeed >= 0.5)
+                                if(avgSpeed >= 50)
                                 {
                                     if(!(SharedPrefUtil.getStatusMode(context,"SP_STATUS_MODE", "On").equals("On")))
                                     {
@@ -279,16 +277,13 @@ public class LocationService extends Service implements LocationListener, Google
                                     swichButton.setChecked(false);
                                 }
                             }
-
                         }
                     }
                 }
                 catch (Exception e){
-
                 }
-                handler.postDelayed(this, INTERVAL_FIVE_MINUTE); //now is every 2 minutes
+                handler.postDelayed(this, INTERVAL_FIVE_MINUTE); //now is every 5 minutes
             }
         }, INTERVAL_FIVE_MINUTE);
     }
-
 }

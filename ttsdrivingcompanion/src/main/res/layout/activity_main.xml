@@ -142,33 +142,41 @@
             android:textSize="15dp" />
     </RelativeLayout>
 
-
-    <Button
-        android:id="@+id/buttonTTSCurrentSpeed"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/rlTts"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rlLocation"
-        android:layout_margin="20dp"
-        android:text="Read Current Speed" />
+        android:orientation="horizontal"
+        android:layout_margin="10dp"
+        android:weightSum="2">
 
+        <Button
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:id="@+id/buttonTTSCurrentSpeed"
+            android:layout_width="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:text="Read Current Speed" />
 
-    <Button
-        android:id="@+id/buttonTTSCurrentLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rlLocation"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_toRightOf="@id/buttonTTSCurrentSpeed"
-        android:text="Read Current Address"
-        android:visibility="visible" />
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/buttonTTSCurrentLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            android:text="Read Current Address"
+            android:visibility="visible" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/buttonChangeUnit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonTTSCurrentSpeed"
+        android:layout_below="@id/rlTts"
         android:layout_centerInParent="true"
         android:layout_margin="20dp"
         android:text="Change Unit" />
